@@ -71,8 +71,13 @@ angular.module('qrScanner', ["ng"]).directive('qrScanner', ['$interval', '$windo
       };
 
       element.bind('$destroy', function() {
-        if ($window.localMediaStream) {
+        if ($window.localMediaStream.stop) {
           $window.localMediaStream.stop();
+        } else if($window.localMediaStream.getVideoTracks) {
+          var videoTracks = $window.localMediaStream.getVideoTracks();
+          if(videoTracks && videoTracks.length > 0) {
+            videoTracks[0].stop();
+          }
         }
         if (stopScan) {
           $interval.cancel(stopScan);
